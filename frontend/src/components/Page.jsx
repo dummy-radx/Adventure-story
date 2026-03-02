@@ -4,9 +4,9 @@ const Page = React.forwardRef((props, ref) => {
   return (
     <div className={`page bg-[#fdf6e3] relative overflow-hidden ${props.direction === 'left' ? 'page--left' : 'page--right'}`} ref={ref} data-density={props.isCover ? "hard" : "soft"}>
       <div className="page-content h-full w-full relative z-10">
-        {/* Paper texture overlay */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.15] bg-[radial-gradient(#8b5a2b_1px,transparent_1px)] bg-size-[16px_16px]"></div>
         <div className="absolute inset-0 pointer-events-none opacity-30 mix-blend-multiply bg-linear-to-br from-amber-50 to-[#ebd8a6]"></div>
+        <div className="absolute inset-0 pointer-events-none flower-pattern opacity-60"></div>
         
         {/* Page crease shadow depending on direction */}
         <div className={`absolute inset-y-0 ${props.direction === 'left' ? 'right-0 w-8 bg-linear-to-r from-transparent to-black/10' : 'left-0 w-8 bg-linear-to-l from-transparent to-black/10'} pointer-events-none z-20`}></div>

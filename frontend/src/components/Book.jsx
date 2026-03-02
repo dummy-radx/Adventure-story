@@ -15,20 +15,10 @@ const Book = () => {
 
     const handleChoice = (outcomeId) => {
         setHistory(prev => [...prev, { type: 'outcome', id: outcomeId }]);
-        setTimeout(() => {
-            if (bookRef.current && bookRef.current.pageFlip()) {
-                bookRef.current.pageFlip().flipNext();
-            }
-        }, 300);
     };
 
     const handleContinue = (nextChapterId) => {
         setHistory(prev => [...prev, { type: nextChapterId === 'end' ? 'end' : 'chapter', id: nextChapterId }]);
-        setTimeout(() => {
-            if (bookRef.current && bookRef.current.pageFlip()) {
-                bookRef.current.pageFlip().flipNext();
-            }
-        }, 300);
     };
 
     // We render a fixed 30 pages to prevent react-pageflip from glitching.
@@ -147,11 +137,21 @@ const Book = () => {
                     <Heart size={64} className="text-amber-900" />
                 </div>
             );
-            rightContent = (
-                <div className="h-full w-full flex items-center justify-center opacity-10">
-                    <Heart size={64} className="text-amber-900" />
-                </div>
-            );
+            
+            if (isBackCover) {
+                rightContent = (
+                    <div className="h-full w-full bg-[#8b5a2b] flex flex-col items-center justify-center p-8 border-l-8 border-[#5e3c1b] shadow-inner rounded-r-lg">
+                        <p className="text-amber-100 text-5xl font-bold">With love, Ishan</p>
+                        <Heart className="w-12 h-12 text-rose-400 mt-8" fill="currentColor" />
+                    </div>
+                );
+            } else {
+                rightContent = (
+                    <div className="h-full w-full flex items-center justify-center opacity-10">
+                        <Heart size={64} className="text-amber-900" />
+                    </div>
+                );
+            }
         }
 
         pages.push(
