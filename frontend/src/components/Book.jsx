@@ -25,12 +25,15 @@ const Book = () => {
     const TOTAL_PAGES = 30;
     const pages = [];
 
-    // Image overrides applied ONLY to chapter intro pages (pages 3, 7, 11)
+    // Image overrides applied ONLY to chapter intro pages
     // Does NOT affect chapter preview spreads or any other pages
     const chapterPageImages = {
         1: "/images/jungle_scene.png",
         2: "/images/mountain_scene.png",
         3: "/images/beach_scene.png",
+        4: "/images/valley_scene.png",
+        5: "/images/temple_scene.png",
+        6: "/images/treasure_scene.png",
     };
 
     for (let i = 0; i < TOTAL_PAGES / 2; i++) {
