@@ -14,11 +14,11 @@ const Book = () => {
     ]);
 
     const handleChoice = (outcomeId) => {
-        setHistory(prev => [...prev, { type: 'outcome', id: outcomeId }]);
-    };
-
-    const handleContinue = (nextChapterId) => {
-        setHistory(prev => [...prev, { type: nextChapterId === 'end' ? 'end' : 'chapter', id: nextChapterId }]);
+        const outcome = storyData.outcomes[outcomeId];
+        const nextItem = outcome.nextChapter === 'end'
+            ? { type: 'end' }
+            : { type: 'chapter', id: outcome.nextChapter };
+        setHistory(prev => [...prev, { type: 'outcome', id: outcomeId }, nextItem]);
     };
 
     // We render a fixed 30 pages to prevent react-pageflip from glitching.
@@ -116,23 +116,8 @@ const Book = () => {
                 );
                 rightContent = (
                     <div className="h-full flex flex-col p-8 justify-center items-center text-center bg-amber-50/30 relative">
-                        {/* Prevent flipping forward if this is the active outcome awaiting continue */}
-                        {i === history.length - 1 && item.type !== 'end' && (
-                            <>
-                                <div className="absolute top-0 right-0 w-16 h-full z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
-                                <div className="absolute bottom-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
-                                <div className="absolute top-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
-                            </>
-                        )}
-                        <p className="text-3xl text-amber-800 leading-relaxed mb-12 relative z-10 drop-shadow-sm">{outcome?.text}</p>
-                        {i === history.length - 1 && (
-                            <button 
-                                onClick={() => handleContinue(outcome.nextChapter)}
-                                className="relative z-50 bg-rose-400 hover:bg-rose-500 text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg shadow-rose-200 transition-all transform hover:scale-[1.05] hover:ring-4 hover:ring-rose-300/50 active:scale-[0.95] flex items-center gap-3 cursor-pointer group"
-                            >
-                                Continue <Heart className="w-6 h-6 animate-pulse group-hover:scale-125 transition-transform" fill="white"/>
-                            </button>
-                        )}
+                        <p className="text-3xl text-amber-800 leading-relaxed relative z-10 drop-shadow-sm">{outcome?.text}</p>
+                        <p className="mt-8 text-sm text-amber-500 animate-pulse">(Turn page to continue)</p>
                     </div>
                 );
             } else if (item.type === 'end') {
@@ -154,40 +139,27 @@ const Book = () => {
                 );
             }
         } else {
-            // Unused pages filler so it doesn't look empty
-            const extraImages = [
-                "/images/jungle_scene.png",
-                "/images/beach_scene.png",
-                "/images/book_cover_scene.png",
-                "/images/cafe_scene.png",
-                "/images/mountain_scene.png"
-            ];
-            const leftImage = extraImages[(i * 2) % extraImages.length];
-            const rightImage = extraImages[(i * 2 + 1) % extraImages.length];
+            // The very next spread after the active chapter: preview the chapter scene image
+            const lastItem = history[history.length - 1];
+            if (i === history.length && lastItem?.type === 'chapter') {
+                const previewChapter = storyData.chapters.find(c => c.id === lastItem.id);
+                if (previewChapter?.image) {
+                    leftContent = (
+                        <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/40">
+                            <div className="w-full h-80 rounded-xl overflow-hidden border-[6px] border-amber-200 shadow-xl relative group">
+                                <img src={previewChapter.image} alt={previewChapter.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                <div className="absolute inset-0 ring-inset ring-4 ring-black/10 rounded-xl pointer-events-none" />
+                            </div>
+                        </div>
+                    );
+                }
+            }
 
-            leftContent = (
-                <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/20">
-                    <div className="w-full h-80 rounded-xl overflow-hidden border-[6px] border-amber-200/50 shadow-sm relative opacity-60 hover:opacity-100 transition-all duration-700">
-                        <img src={leftImage} alt="Decorative scene" className="w-full h-full object-cover mix-blend-multiply" />
-                    </div>
-                    <Heart size={32} className="text-amber-900/20 mt-8" />
-                </div>
-            );
-            
             if (isBackCover) {
                 rightContent = (
                     <div className="h-full w-full bg-[#8b5a2b] flex flex-col items-center justify-center p-8 border-l-8 border-[#5e3c1b] shadow-inner rounded-r-lg">
                         <p className="text-amber-100 text-5xl font-bold">With love, Ishan</p>
                         <Heart className="w-12 h-12 text-rose-400 mt-8" fill="currentColor" />
-                    </div>
-                );
-            } else {
-                rightContent = (
-                    <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/20">
-                        <Heart size={32} className="text-amber-900/20 mb-8" />
-                        <div className="w-full h-80 rounded-xl overflow-hidden border-[6px] border-amber-200/50 shadow-sm relative opacity-60 hover:opacity-100 transition-all duration-700">
-                            <img src={rightImage} alt="Decorative scene" className="w-full h-full object-cover mix-blend-multiply" />
-                        </div>
                     </div>
                 );
             }
