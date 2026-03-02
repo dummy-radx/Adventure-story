@@ -7,7 +7,8 @@
 body {
     margin: 0;
     font-family: 'Indie Flower', cursive;
-    overflow: hidden; /* Prevent scrolling outside the book */
+    overflow-x: hidden; /* Prevent horizontal scroll only */
+    /* Allow vertical scroll on small screens */
 }
 
 /* Base styles for the React Pageflip to look more book-like */
