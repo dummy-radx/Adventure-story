@@ -34,7 +34,7 @@ const Book = () => {
     };
 
     const triggerToast = () => {
-        toast('✨ Choose your path first!', {
+        toast('✨ Choose your path!', {
             id: 'choose-path',
             icon: '💛',
             style: {
