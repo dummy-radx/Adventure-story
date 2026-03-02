@@ -5,7 +5,6 @@ import { storyData } from '../data/story';
 import { Heart } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
-// Hook to track window dimensions
 const useWindowSize = () => {
     const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
     useEffect(() => {
