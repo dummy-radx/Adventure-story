@@ -75,10 +75,12 @@ const Book = () => {
             : { type: 'chapter', id: outcome.nextChapter };
         setHistory(prev => [...prev, { type: 'outcome', id: outcomeId }, nextItem]);
 
-        // Auto-flip to the outcome page after choosing (essential on portrait/mobile)
-        setTimeout(() => {
-            bookRef.current?.pageFlip().flipNext();
-        }, 100);
+        // Auto-flip to the outcome page after choosing (only on smaller screens)
+        if (isMobile || isTablet) {
+            setTimeout(() => {
+                bookRef.current?.pageFlip().flipNext();
+            }, 100);
+        }
     };
 
     // We render a fixed 30 pages to prevent react-pageflip from glitching.
