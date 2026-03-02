@@ -25,6 +25,14 @@ const Book = () => {
     const TOTAL_PAGES = 30;
     const pages = [];
 
+    // Image overrides applied ONLY to chapter intro pages (pages 3, 7, 11)
+    // Does NOT affect chapter preview spreads or any other pages
+    const chapterPageImages = {
+        1: "/images/jungle_scene.png",
+        2: "/images/mountain_scene.png",
+        3: "/images/beach_scene.png",
+    };
+
     for (let i = 0; i < TOTAL_PAGES / 2; i++) {
         const item = history[i];
         
@@ -57,11 +65,12 @@ const Book = () => {
                 );
             } else if (item.type === 'chapter') {
                 const chapter = storyData.chapters.find(c => c.id === item.id);
+                const chapterDisplayImage = (chapter && chapterPageImages[chapter.id]) || chapter?.image;
                 leftContent = (
                     <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/40">
-                       {chapter?.image && (
+                       {chapterDisplayImage && (
                          <div className="w-full h-80 rounded-xl overflow-hidden border-[6px] border-amber-200 shadow-xl relative group">
-                           <img src={chapter.image} alt={chapter.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                           <img src={chapterDisplayImage} alt={chapter.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                            <div className="absolute inset-0 ring-inset ring-4 ring-black/10 rounded-xl pointer-events-none"></div>
                          </div>
                        )}
