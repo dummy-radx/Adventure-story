@@ -3,9 +3,39 @@ import HTMLFlipBook from 'react-pageflip';
 import Page from './Page';
 import { storyData } from '../data/story';
 import { Heart } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Book = () => {
     const bookRef = useRef();
+
+    const triggerToast = () => {
+        toast('✨ Choose your path first!', {
+            id: 'choose-path',
+            icon: '💛',
+            style: {
+                background: '#78350f',
+                color: '#fef3c7',
+                fontWeight: 'bold',
+                fontSize: '1.1rem',
+                borderRadius: '1rem',
+                border: '1px solid #92400e',
+            },
+            duration: 2000,
+        });
+    };
+
+    // Safety-net: if a flip sneaks through while a choice is pending, snap back
+    const handleFlip = (e) => {
+        const lastItem = history[history.length - 1];
+        if (lastItem?.type === 'chapter') {
+            const lockedPageIndex = (history.length - 1) * 2;
+            if (e.data > lockedPageIndex + 1) {
+                setTimeout(() => {
+                    bookRef.current?.pageFlip().flip(lockedPageIndex);
+                }, 50);
+            }
+        }
+    };
     
     // history tracks the flow from beginning to current
     const [history, setHistory] = useState([
@@ -69,8 +99,18 @@ const Book = () => {
             } else if (item.type === 'chapter') {
                 const chapter = storyData.chapters.find(c => c.id === item.id);
                 const chapterDisplayImage = (chapter && chapterPageImages[chapter.id]) || chapter?.image;
+                const blockFlip = (e) => { e.stopPropagation(); triggerToast(); };
                 leftContent = (
-                    <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/40">
+                    <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/40 relative">
+                       {/* Full-page blocker on the image page when choice is pending */}
+                       {i === history.length - 1 && (
+                           <div
+                               className="absolute inset-0 z-50 cursor-not-allowed"
+                               onPointerDown={blockFlip}
+                               onMouseDown={blockFlip}
+                               onTouchStart={blockFlip}
+                           />
+                       )}
                        {chapterDisplayImage && (
                          <div className="w-full h-80 rounded-xl overflow-hidden border-[6px] border-amber-200 shadow-xl relative group">
                            <img src={chapterDisplayImage} alt={chapter.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -84,9 +124,27 @@ const Book = () => {
                         {/* Prevent flipping forward if this is the active page awaiting a choice */}
                         {i === history.length - 1 && (
                             <>
-                                <div className="absolute top-0 right-0 w-16 h-full z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
-                                <div className="absolute bottom-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
-                                <div className="absolute top-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
+                                {/* Full right edge — the main flip-drag zone */}
+                                <div
+                                    className="absolute inset-y-0 right-0 w-20 z-50 cursor-not-allowed"
+                                    onPointerDown={e => { e.stopPropagation(); triggerToast(); }}
+                                    onMouseDown={e => { e.stopPropagation(); triggerToast(); }}
+                                    onTouchStart={e => { e.stopPropagation(); triggerToast(); }}
+                                />
+                                {/* Bottom-right corner */}
+                                <div
+                                    className="absolute bottom-0 right-0 w-40 h-28 z-50 cursor-not-allowed"
+                                    onPointerDown={e => { e.stopPropagation(); triggerToast(); }}
+                                    onMouseDown={e => { e.stopPropagation(); triggerToast(); }}
+                                    onTouchStart={e => { e.stopPropagation(); triggerToast(); }}
+                                />
+                                {/* Top-right corner */}
+                                <div
+                                    className="absolute top-0 right-0 w-40 h-28 z-50 cursor-not-allowed"
+                                    onPointerDown={e => { e.stopPropagation(); triggerToast(); }}
+                                    onMouseDown={e => { e.stopPropagation(); triggerToast(); }}
+                                    onTouchStart={e => { e.stopPropagation(); triggerToast(); }}
+                                />
                             </>
                         )}
                         <div className="relative z-10">
@@ -168,6 +226,18 @@ const Book = () => {
             }
 
             if (isBackCover) {
+                leftContent = (
+                    <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/40">
+                        <div className="w-full h-[85%] rounded-xl overflow-hidden border-[6px] border-amber-200 shadow-xl relative group">
+                            <img
+                                src="/images/ishuandsreeparna.png"
+                                alt="Ishan and Sreeparna"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 ring-inset ring-4 ring-black/10 rounded-xl pointer-events-none" />
+                        </div>
+                    </div>
+                );
                 rightContent = (
                     <div className="h-full w-full bg-[#8b5a2b] flex flex-col items-center justify-center p-8 border-l-8 border-[#5e3c1b] shadow-inner rounded-r-lg">
                         <p className="text-amber-100 text-5xl font-bold">With love, Ishan</p>
@@ -190,7 +260,9 @@ const Book = () => {
     }
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-transparent p-4 font-handwriting">
+        <div className="flex justify-center items-center min-h-screen bg-transparent p-4 font-handwriting relative">
+            <Toaster position="top-center" />
+            {/* Toast notification */}
             <HTMLFlipBook
                 width={500}
                 height={650}
@@ -206,6 +278,7 @@ const Book = () => {
                 className="book-shadow"
                 flippingTime={1000}
                 usePortrait={false}
+                onFlip={handleFlip}
             >
                 {pages}
             </HTMLFlipBook>
