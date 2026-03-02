@@ -70,7 +70,7 @@ export const storyData = {
     "1a": {
       text: "The glowing wisps playfully guided them through a secret grove filled with singing flowers! They learned a cheerful tune together before the forest cleared, revealing majestic mountains in the distance.",
       nextChapter: 2,
-      image: "/images/outcome_1a_fairy_ring.png"
+      image: "/images/out_1a_fairy_ring.png"
     },
     "1b": {
       text: "They followed the crystal-clear stream and met a friendly water sprite who gifted them a magical compass. With their new treasure, they easily found their way out of the forest.",
@@ -85,47 +85,47 @@ export const storyData = {
     "2b": {
       text: "Inside the glittering ice caves, they discovered ancient frosted crystals that hummed a peaceful lullaby. They shared a warm hug to beat the chill as they found the exit.",
       nextChapter: 3,
-      image: "/images/ch2_mountain_scene.png"
+      image: "/images/out_2b_caves.png"
     },
     "3a": {
       text: "The Coral Bridge was a kaleidoscope of colors that chimed under their feet. They spotted playful rainbow fish jumping alongside them as they safely crossed the sea.",
       nextChapter: 4,
-      image: "/images/ch3_sea_scene.png"
+      image: "/images/out_3a_bridge.png"
     },
     "3b": {
       text: "They hopped onto the back of a wise, ancient sea turtle who told them tales of the sea's history. It was a smooth and magical ride across the glittering waves.",
       nextChapter: 4,
-      image: "/images/beach_scene.png"
+      image: "/images/out_3b_turtle.png"
     },
     "4a": {
       text: "At the Meteor Crater, they found chunks of fallen stars. Ishan pocketed a tiny glowing star fragment and gave it to Sreeparna as a token of their cosmic adventure.",
       nextChapter: 5,
-      image: "/images/ch4_valley_scene.png"
+      image: "/images/out_4a_crater.png"
     },
     "4b": {
       text: "They sat by the Aurora Lake, watching the sky's reflection shimmering in the water. They skipped glowing stones across the surface, enjoying a perfectly peaceful moment.",
       nextChapter: 5,
-      image: "/images/ch4_valley_scene.png"
+      image: "/images/out_4b_lake.png"
     },
     "5a": {
       text: "The Golden Door swung open to reveal a hall of mirrors that showed them beautiful reflections of their future together. Armed with confidence, they proceeded deeper.",
       nextChapter: 6,
-      image: "/images/ch5_temple_scene.png"
+      image: "/images/out_5a_gold.png"
     },
     "5b": {
       text: "The Silver Door led to an ancient library of floating books. They read a magical scroll that revealed the final password to the treasure chamber.",
       nextChapter: 6,
-      image: "/images/ch5_temple_scene.png"
+      image: "/images/out_5b_silver.png"
     },
     "6a": {
       text: "The Diamond Chest burst open in a shower of glittering starlight! Inside, they found the ultimate prize: a woven band of eternal love and adventure.",
       nextChapter: "end",
-      image: "/images/ch6_chamber_scene.png"
+      image: "/images/out_6a_diamond.png"
     },
     "6b": {
       text: "The Ruby Chest unlocked with a warm, rosy glow. They discovered a pair of enchanted crowns, crowning them the King and Queen of the Magical Realms!",
       nextChapter: "end",
-      image: "/images/ch6_chamber_scene.png"
+      image: "/images/out_6b_ruby.png"
     }
   },
   end: {

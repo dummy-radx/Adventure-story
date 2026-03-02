@@ -37,10 +37,16 @@ const Book = () => {
             if (item.type === 'cover') {
                 leftContent = (
                     <div className="h-full flex flex-col items-center justify-center bg-amber-100/50 p-6 rounded-r-lg border-l-8 border-amber-800 shadow-inner">
-                        <Heart className="w-16 h-16 text-rose-500 mb-6 animate-bounce" fill="currentColor" />
-                        <h1 className="text-5xl font-bold text-amber-900 mb-4 text-center leading-tight">{storyData.cover.title}</h1>
-                        <p className="text-2xl text-amber-700 text-center font-semibold">{storyData.cover.subtitle}</p>
-                        <p className="mt-12 text-lg text-amber-600 animate-pulse">(Click or drag corner to turn page)</p>
+                        {storyData.cover.image && (
+                           <div className="w-full h-56 mb-4 rounded-xl overflow-hidden border-4 border-amber-800 shadow-xl relative group">
+                             <img src={storyData.cover.image} alt={storyData.cover.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                             <div className="absolute inset-0 ring-inset ring-4 ring-black/10 rounded-xl pointer-events-none"></div>
+                           </div>
+                        )}
+                        {!storyData.cover.image && <Heart className="w-16 h-16 text-rose-500 mb-6 animate-bounce" fill="currentColor" />}
+                        <h1 className="text-4xl font-bold text-amber-900 mb-2 text-center leading-tight">{storyData.cover.title}</h1>
+                        <p className="text-xl text-amber-700 text-center font-semibold">{storyData.cover.subtitle}</p>
+                        <p className="mt-6 text-sm text-amber-600 animate-pulse">(Click or drag corner to turn page)</p>
                     </div>
                 );
                 rightContent = (
@@ -62,21 +68,30 @@ const Book = () => {
                     </div>
                 );
                 rightContent = (
-                    <div className="h-full flex flex-col p-8 justify-between bg-amber-50/30">
-                        <div>
-                            <h2 className="text-4xl font-bold text-amber-900 mb-6 border-b-2 border-amber-200 pb-2">{chapter?.title}</h2>
-                            <p className="text-2xl text-amber-800 leading-relaxed whitespace-pre-line">{chapter?.text}</p>
+                    <div className="h-full flex flex-col p-8 justify-between bg-amber-50/30 relative">
+                        {/* Prevent flipping forward if this is the active page awaiting a choice */}
+                        {i === history.length - 1 && (
+                            <>
+                                <div className="absolute top-0 right-0 w-16 h-full z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
+                                <div className="absolute bottom-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
+                                <div className="absolute top-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
+                            </>
+                        )}
+                        <div className="relative z-10">
+                            <h2 className="text-4xl font-bold text-amber-900 mb-6 border-b-2 border-amber-200 pb-2 drop-shadow-sm">{chapter?.title}</h2>
+                            <p className="text-2xl text-amber-800 leading-relaxed whitespace-pre-line drop-shadow-sm">{chapter?.text}</p>
                         </div>
                         
                         {i === history.length - 1 && (
-                            <div className="flex flex-col gap-4 mt-8">
+                            <div className="flex flex-col gap-4 mt-8 relative z-50">
                                 {chapter?.options.map((opt, idx) => (
                                     <button 
                                         key={idx}
                                         onClick={() => handleChoice(opt.nextOutcome)}
-                                        className="bg-amber-100/80 hover:bg-amber-200 text-amber-900 px-6 py-4 rounded-xl border-2 border-dashed border-amber-400 font-bold text-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] text-left shadow-sm flex items-center gap-3"
+                                        className="bg-amber-100/80 hover:bg-amber-200 text-amber-900 px-6 py-4 rounded-xl border-2 border-dashed border-amber-400 font-bold text-xl transition-all transform hover:scale-[1.02] hover:shadow-md hover:ring-2 hover:ring-rose-300 active:scale-[0.98] text-left flex items-center gap-3 relative overflow-hidden group"
                                     >
-                                        <Heart className="w-5 h-5 text-rose-400" fill="currentColor"/> 
+                                        <div className="absolute inset-0 bg-linear-to-r from-amber-100/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                                        <Heart className="w-5 h-5 text-rose-400 group-hover:animate-ping" fill="currentColor"/> 
                                         {opt.text}
                                     </button>
                                 ))}
@@ -100,14 +115,22 @@ const Book = () => {
                     </div>
                 );
                 rightContent = (
-                    <div className="h-full flex flex-col p-8 justify-center items-center text-center bg-amber-50/30">
-                        <p className="text-3xl text-amber-800 leading-relaxed mb-12">{outcome?.text}</p>
+                    <div className="h-full flex flex-col p-8 justify-center items-center text-center bg-amber-50/30 relative">
+                        {/* Prevent flipping forward if this is the active outcome awaiting continue */}
+                        {i === history.length - 1 && item.type !== 'end' && (
+                            <>
+                                <div className="absolute top-0 right-0 w-16 h-full z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
+                                <div className="absolute bottom-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
+                                <div className="absolute top-0 right-0 w-32 h-32 z-40 cursor-not-allowed" onPointerDown={e => e.stopPropagation()} />
+                            </>
+                        )}
+                        <p className="text-3xl text-amber-800 leading-relaxed mb-12 relative z-10 drop-shadow-sm">{outcome?.text}</p>
                         {i === history.length - 1 && (
                             <button 
                                 onClick={() => handleContinue(outcome.nextChapter)}
-                                className="bg-rose-400 hover:bg-rose-500 text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg shadow-rose-200 transition-all transform hover:scale-[1.05] active:scale-[0.95] flex items-center gap-3 cursor-pointer"
+                                className="relative z-50 bg-rose-400 hover:bg-rose-500 text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg shadow-rose-200 transition-all transform hover:scale-[1.05] hover:ring-4 hover:ring-rose-300/50 active:scale-[0.95] flex items-center gap-3 cursor-pointer group"
                             >
-                                Continue <Heart className="w-6 h-6 animate-pulse" fill="white"/>
+                                Continue <Heart className="w-6 h-6 animate-pulse group-hover:scale-125 transition-transform" fill="white"/>
                             </button>
                         )}
                     </div>
@@ -131,10 +154,23 @@ const Book = () => {
                 );
             }
         } else {
-            // Blank future/unused pages
+            // Unused pages filler so it doesn't look empty
+            const extraImages = [
+                "/images/jungle_scene.png",
+                "/images/beach_scene.png",
+                "/images/book_cover_scene.png",
+                "/images/cafe_scene.png",
+                "/images/mountain_scene.png"
+            ];
+            const leftImage = extraImages[(i * 2) % extraImages.length];
+            const rightImage = extraImages[(i * 2 + 1) % extraImages.length];
+
             leftContent = (
-                <div className="h-full w-full flex items-center justify-center opacity-10">
-                    <Heart size={64} className="text-amber-900" />
+                <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/20">
+                    <div className="w-full h-80 rounded-xl overflow-hidden border-[6px] border-amber-200/50 shadow-sm relative opacity-60 hover:opacity-100 transition-all duration-700">
+                        <img src={leftImage} alt="Decorative scene" className="w-full h-full object-cover mix-blend-multiply" />
+                    </div>
+                    <Heart size={32} className="text-amber-900/20 mt-8" />
                 </div>
             );
             
@@ -147,8 +183,11 @@ const Book = () => {
                 );
             } else {
                 rightContent = (
-                    <div className="h-full w-full flex items-center justify-center opacity-10">
-                        <Heart size={64} className="text-amber-900" />
+                    <div className="h-full flex flex-col p-6 items-center justify-center bg-amber-50/20">
+                        <Heart size={32} className="text-amber-900/20 mb-8" />
+                        <div className="w-full h-80 rounded-xl overflow-hidden border-[6px] border-amber-200/50 shadow-sm relative opacity-60 hover:opacity-100 transition-all duration-700">
+                            <img src={rightImage} alt="Decorative scene" className="w-full h-full object-cover mix-blend-multiply" />
+                        </div>
                     </div>
                 );
             }
